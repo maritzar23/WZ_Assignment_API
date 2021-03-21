@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "0411c63d-50df-48c2-9686-c317851fe8f4",
+		"name": "Postman_Assigment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PROJECT",
+			"item": [
+				{
+					"name": "Create Task",
+					"item": [
+						{
+							"name": "Create Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.test(\"content value is \" + jsonData.content, function () {   ",
+											"});",
+											"",
+											"pm.test(\"json schema validation pass\", function (){",
+											"    pm.response.to.have.jsonSchema(JSON);",
+											"});",
+											"",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});",
+											"",
+											"pm.environment.set(\"TaskId\", jsonData.id)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Requested-Id",
+										"value": "$(uuidgen)",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Test Task\", \n    \"due_string\": \"tomorrow at 12:00\", \n    \"due_lang\": \"sp\", \n    \"priority\": 4\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://api.todoist.com/rest/v1/tasks",
+									"protocol": "https",
+									"host": [
+										"api",
+										"todoist",
+										"com"
+									],
+									"path": [
+										"rest",
+										"v1",
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Task",
+					"item": [
+						{
+							"name": "Get Active Tasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.test(\"Content is present\", function () {",
+											"    jsonData.forEach(function(item){",
+											"    pm.expect(item).to.haveOwnProperty(\"content\")",
+											"    });    ",
+											"});",
+											"pm.test(\"json schema validation\", function (){",
+											"    pm.response.to.have.jsonSchema(JSON);",
+											"});",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}",
+									"host": [
+										"{{baseURL}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Active Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.test(\"content value is \" + jsonData.content, function () {   ",
+											"});",
+											"pm.test(\"json schema validation\", function (){",
+											"    pm.response.to.have.jsonSchema(JSON);",
+											"});",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});",
+											"",
+											"var taskId = pm.environment.get(\"TaskId\");",
+											"pm.test(\"Get task id: \" + taskId, function(){",
+											"    pm.expect(jsonData.id).to.eql(taskId)",
+											"})",
+											"",
+											"pm.environment.set(\"taskId\", jsonData.id)",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/{{TaskId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"{{TaskId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update Task",
+					"item": [
+						{
+							"name": "Update Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.be.success;",
+											"});",
+											"",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Requested-Id",
+										"value": "$(uuidgen)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"Test Task Updated\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/{{TaskId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"{{TaskId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Complete a task",
+					"item": [
+						{
+							"name": "Complete Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});",
+											"",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});",
+											"",
+											"var getTaskId = pm.environment.get(\"TaskId\")",
+											"pm.test(\"Task \" + getTaskId + \" completed \" , function(){",
+											"});",
+											"",
+											"/*pm.environment.set(\"newTaskId\", \"12345\");",
+											"var getNewTaskId = pm.environment.get(\"newTaskId\")",
+											"pm.sendRequest(pm.environment.get(\"baseURL\" + \"/\" + getNewTaskId +\"/get\"), function (err, response) {",
+											"    //console.log(response.json());",
+											"    pm.expect(response.to.have.status(404))",
+											"});*/"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/{{TaskId}}/{{cStatus}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"{{TaskId}}",
+										"{{cStatus}}"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ReOpen Task",
+					"item": [
+						{
+							"name": "Reopen Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});",
+											"",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});",
+											"",
+											"var getTaskId = pm.environment.get(\"taskId\")",
+											"pm.test(\"Task \" + getTaskId + \" was reopen \" , function(){",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/{{TaskId}}/{{rStatus}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"{{TaskId}}",
+										"{{rStatus}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Task",
+					"item": [
+						{
+							"name": "Delete Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});",
+											"",
+											"pm.test(\"Response Time is :\" + pm.response.responseTime, function(){",
+											"});",
+											"",
+											"var getTaskId = pm.environment.get(\"taskId\")",
+											"pm.test(\"Task \" + getTaskId + \" was deleted \" , function(){",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/{{TaskId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"{{TaskId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
